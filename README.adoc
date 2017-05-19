@@ -1,3 +1,5 @@
 = leetcode
 
+image::https://img.shields.io/travis/jhinrichsen/leetcode.svg[Travis build status, link="https://travis-ci.org/jhinrichsen/leetcode"]
+
 LeetCode.com
