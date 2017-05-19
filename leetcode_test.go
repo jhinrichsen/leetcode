@@ -1,15 +1,14 @@
 package leetcode
 
-func twoSum(nums []int, target int) []int {
-	for i, v := range nums {
-		for j, w := range nums {
-			if i == j {
-				continue
-			}
-			if v+w == target {
-				return []int{i, j}
-			}
-		}
+import (
+	"reflect"
+	"testing"
+)
+
+func TestTwoSum(t *testing.T) {
+	want := []int{0, 1}
+	got := twoSum([]int{2, 7, 11, 15}, 9)
+	if !reflect.DeepEqual(want, got) {
+		t.Fatalf("want %+v but got %+v", want, got)
 	}
-	return []int{-1, -1}
 }
