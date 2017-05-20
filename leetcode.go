@@ -1,5 +1,7 @@
 package leetcode
 
+import "math/big"
+
 func TwoSum(nums []int, target int) []int {
 	for i, v := range nums {
 		for j, w := range nums {
@@ -19,27 +21,35 @@ type ListNode struct {
 	Next *ListNode
 }
 
-func val(l *ListNode) int {
-	n := 0
-	exp := 1
+func val(l *ListNode) *big.Int {
+	n := big.NewInt(0)
+	exp := big.NewInt(1)
+	ten := big.NewInt(10)
 	for {
 		if l == nil {
 			break
 		}
-		n += l.Val * exp
-		exp *= 10
+		// n += l.Val * exp
+		v := big.NewInt(int64(l.Val))
+		v.Mul(v, exp)
+		n.Add(n, v)
+		exp.Mul(exp, ten)
 		l = l.Next
 	}
 	return n
 }
 
-func listNode(i int) *ListNode {
+func listNode(i *big.Int) *ListNode {
 	head := &ListNode{}
 	l := head
+	zero := big.NewInt(0)
+	ten := big.NewInt(10)
+	v := big.NewInt(0)
 	for {
-		l.Val = i % 10
-		i /= 10
-		if i == 0 {
+		// last digit can always be downcasted into an int
+		l.Val = int(v.Mod(i, ten).Int64())
+		i.Div(i, ten)
+		if i.Cmp(zero) == 0 {
 			break
 		}
 		l.Next = &ListNode{}
@@ -52,5 +62,5 @@ func AddTwoNumbers(l1 *ListNode, l2 *ListNode) *ListNode {
 	i1 := val(l1)
 	i2 := val(l2)
 
-	return listNode(i1 + i2)
+	return listNode(i1.Add(i1, i2))
 }
