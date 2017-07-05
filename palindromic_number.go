@@ -49,7 +49,7 @@ func isPalindrome(x int) bool {
 	// 123456 / (10 ^ d) => 1234
 	// 1234 % 10 => 4
 	digit := func(n, d int) int {
-		y := (n / pow(10, d)) % (1 + d)
+		y := (n / pow(10, d)) % 10
 		fmt.Printf("digit(%v, %v) = %v\n", n, d, y)
 		return y
 	}
