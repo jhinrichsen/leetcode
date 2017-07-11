@@ -2,7 +2,7 @@ package leetcode
 
 import "testing"
 
-type cvtFn func(string) (int, error)
+type cvtFn func(string) int
 
 var standardTestTable = []string{
 	"",
@@ -32,19 +32,8 @@ var subtractionTestTable = []string{
 	"X",
 }
 
-var fStd cvtFn = func(roman string) (int, error) {
-	return romanToIntStandard(roman)
-}
-
-var fSub cvtFn = func(roman string) (int, error) {
-	return romanToIntSubtraction(roman)
-}
-
-func assert(t *testing.T, val string, want int, fn cvtFn) {
-	got, err := fn(val)
-	if err != nil {
-		t.Fatalf("%v", err)
-	}
+func assert(t *testing.T, val string, want int) {
+	got := romanToInt(val)
 	if want != got {
 		t.Fatalf("Want %v for %v but got %v", want, val, got)
 	}
@@ -55,7 +44,7 @@ func TestStandard(t *testing.T) {
 		if val == "" {
 			continue
 		}
-		assert(t, val, want, fStd)
+		assert(t, val, want)
 	}
 }
 
@@ -64,58 +53,49 @@ func TestSubtraction(t *testing.T) {
 		if val == "" {
 			continue
 		}
-		assert(t, val, want, fSub)
+		assert(t, val, want)
 	}
 }
 
-func TestEdgeCases(t *testing.T) {
-	aStd := func(roman string, want int) {
-		assert(t, roman, want, fStd)
+func TestEdgeCasesStandard(t *testing.T) {
+	// Poor man's currying
+	a := func(roman string, want int) {
+		assert(t, roman, want)
 	}
-	aSub := func(roman string, want int) {
-		assert(t, roman, want, fSub)
+	a("VIII", 8)
+	a("XL", 40)
+	a("XLVIII", 48)
+	a("XLIX", 49)
+	a("XCVIII", 98)
+	a("XCIX", 99)
+	a("CMXC", 990)
+	a("MDCCCCLXXXXVIIII", 1999)
+}
+
+func TestEdgeCasesSubtraction(t *testing.T) {
+	// Poor man's currying
+	a := func(roman string, want int) {
+		assert(t, roman, want)
 	}
+	a("IIX", 8)
+	a("XL", 90)
+	a("IIL", 48)
+	a("IL", 49)
+	a("IIC", 98)
+	a("IC", 99)
+	a("XM", 990)
 
-	aStd("VIII", 8)
-	aSub("IIX", 8)
-
-	aSub("XL", 40)
-	aSub("XL", 90)
-
-	aStd("XLVIII", 48)
-	aSub("IIL", 48)
-
-	aStd("XLIX", 49)
-	aSub("IL", 49)
-
-	aStd("XCVIII", 98)
-	aSub("IIC", 98)
-
-	aStd("XCIX", 99)
-	aSub("IC", 99)
-
-	aStd("CMXC", 990)
-	aSub("XM", 990)
-
-	aStd("MDCCCCLXXXXVIIII", 1999)
 	// subtraction only for certain numerals
-	aSub("MCMXCIX", 1999)
-	aSub("MIM", 1999)
+	a("MCMXCIX", 1999)
+	a("MIM", 1999)
 }
 
 func TestInvalidNumeral(t *testing.T) {
 	bads := []string{"A", "X1", ""}
-	fns := []func(string) (int, error){
-		romanToIntStandard,
-		romanToIntSubtraction,
-	}
-	for _, fn := range fns {
-		for _, bad := range bads {
-			n, err := fn(bad)
-			if err != invalidNumeralError {
-				t.Fatalf("Expected error but got %v, %v",
-					n, err)
-			}
+	for _, bad := range bads {
+		n := romanToInt(bad)
+		if n != -1 {
+			t.Fatalf("Expected error but got %v", n)
 		}
 	}
 }
