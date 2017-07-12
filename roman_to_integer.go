@@ -9,11 +9,6 @@
 
 package leetcode
 
-import "errors"
-
-var invalidNumeralError = errors.New("Invalid roman numeral, only " +
-	"I, V, X, L, C, D and M allowed")
-
 // Input is guaranteed to be within the range 1..3999
 
 // romanToIntStandard converts roman numerals (I, V, X, L, C, D, M) to a number
@@ -24,38 +19,81 @@ var invalidNumeralError = errors.New("Invalid roman numeral, only " +
 // If input can be interpreted in standard and subtraction way, subtraction is
 // chosen. XIV returns 14 instead of 16.
 func romanToInt(s string) int {
-	if len(s) == 0 {
+	rs := []rune(s)
+	if len(rs) == 0 {
 		return -1
 	}
-	// Standard representation
-	std := func([]rune) int {
-		base10 := 0
-		for _, c := range s {
-			// These hardcoded switches are not very maintainable,
-			// but in the case of roman numerals changes are
-			// unlikely
-			switch c {
-			case 'I':
-				base10 += 1
-			case 'V':
-				base10 += 5
-			case 'X':
-				base10 += 10
-			case 'L':
-				base10 += 50
-			case 'C':
-				base10 += 100
-			case 'D':
-				base10 += 500
-			case 'M':
-				base10 += 1000
-			default:
-				return -1
+	err := -1
+	val := func(roman rune) int {
+		// These hardcoded switches are not very maintainable,
+		// but in the case of roman numerals changes are
+		// unlikely
+		switch roman {
+		case 'I':
+			return 1
+		case 'V':
+			return 5
+		case 'X':
+			return 10
+		case 'L':
+			return 50
+		case 'C':
+			return 100
+		case 'D':
+			return 500
+		case 'M':
+			return 1000
+		default:
+			return err
+		}
+	}
+	// All numerals are in descending order (standard notation)
+	isDescending := func(rs []rune) bool {
+		right := len(rs) - 1
+		for i := 0; i < right; i++ {
+			if val(rs[i]) < val(rs[i+1]) {
+				return false
 			}
 		}
-		return base10
+		return true
+	}
+	// subtraction rule: the next non-same character is higher
+	isSub := func(rs []rune) bool {
+		left := val(rs[0])
+		for _, r := range rs {
+			right := val(r)
+			if left == right {
+				continue
+			}
+			return left < right
+		}
+		return false
 	}
 
-	rs := []rune(s)
-	return std(rs)
+	if isDescending(rs) {
+		// Standard representation, nothing fancy
+		sum := 0
+		for _, r := range rs {
+			n := val(r)
+			if n == err {
+				return err
+			}
+			sum += n
+		}
+		return sum
+	}
+	// Subtraction representation, fancy stuff
+	sum := 0
+	for i, r := range rs {
+		n := val(r)
+		if n == err {
+			return err
+		}
+		if isSub(rs[i:]) {
+			sum -= n
+		} else {
+			sum += n
+		}
+	}
+	return sum
 }

@@ -1,6 +1,8 @@
 package leetcode
 
-import "testing"
+import (
+	"testing"
+)
 
 type cvtFn func(string) int
 
@@ -32,7 +34,7 @@ var subtractionTestTable = []string{
 	"X",
 }
 
-func assert(t *testing.T, val string, want int) {
+func assertRoman(t *testing.T, val string, want int) {
 	got := romanToInt(val)
 	if want != got {
 		t.Fatalf("Want %v for %v but got %v", want, val, got)
@@ -44,7 +46,7 @@ func TestStandard(t *testing.T) {
 		if val == "" {
 			continue
 		}
-		assert(t, val, want)
+		assertRoman(t, val, want)
 	}
 }
 
@@ -53,19 +55,17 @@ func TestSubtraction(t *testing.T) {
 		if val == "" {
 			continue
 		}
-		assert(t, val, want)
+		assertRoman(t, val, want)
 	}
 }
 
 func TestEdgeCasesStandard(t *testing.T) {
 	// Poor man's currying
 	a := func(roman string, want int) {
-		assert(t, roman, want)
+		assertRoman(t, roman, want)
 	}
 	a("VIII", 8)
-	a("XL", 40)
 	a("XLVIII", 48)
-	a("XLIX", 49)
 	a("XCVIII", 98)
 	a("XCIX", 99)
 	a("CMXC", 990)
@@ -75,10 +75,11 @@ func TestEdgeCasesStandard(t *testing.T) {
 func TestEdgeCasesSubtraction(t *testing.T) {
 	// Poor man's currying
 	a := func(roman string, want int) {
-		assert(t, roman, want)
+		assertRoman(t, roman, want)
 	}
 	a("IIX", 8)
-	a("XL", 90)
+	a("XL", 40)
+	a("XLIX", 49)
 	a("IIL", 48)
 	a("IL", 49)
 	a("IIC", 98)
@@ -91,7 +92,7 @@ func TestEdgeCasesSubtraction(t *testing.T) {
 }
 
 func TestInvalidNumeral(t *testing.T) {
-	bads := []string{"A", "X1", ""}
+	bads := []string{"A", "X1", "VIVY"}
 	for _, bad := range bads {
 		n := romanToInt(bad)
 		if n != -1 {
