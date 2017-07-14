@@ -19,15 +19,13 @@ package leetcode
 // If input can be interpreted in standard and subtraction way, subtraction is
 // chosen. XIV returns 14 instead of 16.
 func romanToInt(s string) int {
-	rs := []rune(s)
-	if len(rs) == 0 {
-		return -1
-	}
 	err := -1
+	if len(s) == 0 {
+		return err
+	}
 	val := func(roman rune) int {
 		// These hardcoded switches are not very maintainable,
-		// but in the case of roman numerals changes are
-		// unlikely
+		// but changes to roman numerals are unlikely
 		switch roman {
 		case 'I':
 			return 1
@@ -47,16 +45,6 @@ func romanToInt(s string) int {
 			return err
 		}
 	}
-	// All numerals are in descending order (standard notation)
-	isDescending := func(rs []rune) bool {
-		right := len(rs) - 1
-		for i := 0; i < right; i++ {
-			if val(rs[i]) < val(rs[i+1]) {
-				return false
-			}
-		}
-		return true
-	}
 	// subtraction rule: the next non-same character is higher
 	isSub := func(rs []rune) bool {
 		left := val(rs[0])
@@ -69,20 +57,7 @@ func romanToInt(s string) int {
 		}
 		return false
 	}
-
-	if isDescending(rs) {
-		// Standard representation, nothing fancy
-		sum := 0
-		for _, r := range rs {
-			n := val(r)
-			if n == err {
-				return err
-			}
-			sum += n
-		}
-		return sum
-	}
-	// Subtraction representation, fancy stuff
+	rs := []rune(s)
 	sum := 0
 	for i, r := range rs {
 		n := val(r)
