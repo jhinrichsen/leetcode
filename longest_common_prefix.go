@@ -8,6 +8,10 @@
 package leetcode
 
 func longestCommonPrefix(strs []string) string {
+	return longestCommonPrefixBinarySearch(strs)
+}
+
+func longestCommonPrefixBruteForce(strs []string) string {
 	// min length of any string
 	minLen := func(strs []string) int {
 		min := len(strs[0])
@@ -45,4 +49,48 @@ func longestCommonPrefix(strs []string) string {
 		}
 	}
 	return strs[0][0:min]
+}
+
+func longestCommonPrefixBinarySearch(strs []string) string {
+	// min length of any string
+	minLen := func(strs []string) int {
+		min := len(strs[0])
+		for i := 1; i < len(strs); i++ {
+			l := len(strs[i])
+			if l < min {
+				min = l
+			}
+		}
+		return min
+	}
+	isSame := func(strs []string, index int) bool {
+		c := strs[0][0:index]
+		for i := 1; i < len(strs); i++ {
+			if c != strs[i][0:index] {
+				return false
+			}
+		}
+		return true
+	}
+
+	// Sanity checks
+	if len(strs) == 0 {
+		return ""
+	}
+	min := minLen(strs)
+	if min == 0 {
+		return ""
+	}
+
+	left, right := 0, min
+	for right-left > 1 {
+		span := right - left
+		span /= 2
+		if isSame(strs, left+span) {
+			left += span
+		} else {
+			right -= span
+		}
+	}
+	return strs[0][0:left]
 }
