@@ -101,6 +101,7 @@ func TestOneEmpty(t *testing.T) {
 }
 
 // Windows, Intel Core i7-4770 @ 3.4 GHz: 428 ns/op
+// Linux, Intel Xeon E312xx (Sandy Bridge) @ 2.6 GHz: 579 ns/op
 func BenchmarkBruteForce(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		ss := []string{
@@ -122,6 +123,7 @@ func BenchmarkBruteForce(b *testing.B) {
 }
 
 // Windows, Intel Core i7-4770 @ 3.4 GHz: 268 ns/op
+// Linux, Intel Xeon E312xx (Sandy Bridge) @ 2.6 GHz: 300 ns/op
 func BenchmarkBinarySearch(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		ss := []string{
