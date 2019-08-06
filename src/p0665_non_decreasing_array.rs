@@ -1,28 +1,31 @@
 pub fn check_possibility(nums: Vec<i32>) -> bool {
-    let anomalies = |ns: &[i32]| {
-        let mut n = 0;
-        for i in 0..ns.len() - 1 {
-            if ns[i] > ns[i + 1] {
-                n += 1;
+    let is_monotone = |v: &[i32]| -> bool {
+        for i in 0..v.len() - 1 {
+            if v[i] > v[i + 1] {
+                return false;
             }
         }
-        n
+        true
     };
-    if anomalies(&nums[..]) == 0 {
-        return true;
-    }
-    if anomalies(&nums[..]) > 1 {
-        return false;
-    }
-    let idx = |ns: &[i32]| {
-        for i in 0..ns.len() - 1 {
-            if ns[i] > ns[i + 1] {
-                return i;
+
+    let mut bak;
+    let mut clone = nums.to_vec();
+    for i in 0..nums.len() {
+        let src_index = {
+            if i == 0 {
+                1
+            } else {
+                i - 1
             }
+        };
+        bak = clone[i];
+        clone[i] = clone[src_index];
+        if is_monotone(&clone) {
+            return true;
         }
-        ns.len()
-    };
-    true
+        clone[i] = bak;
+    }
+    false
 }
 
 #[cfg(test)]
