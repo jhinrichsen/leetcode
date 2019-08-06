@@ -1,22 +1,27 @@
 pub fn check_possibility(nums: Vec<i32>) -> bool {
-    let mut anomalies = 0;
-    for i in 1..nums.len() {
-        if nums[i - 1] <= nums[i] {
-            continue;
-        }
-
-        anomalies += 1;
-        if anomalies > 1 {
-            return false;
-        }
-        let has_right = i + 1 < nums.len();
-        if has_right {
-            let monotone = nums[i - 1] <= nums[i + 1];
-            if !monotone {
-                return false;
+    let anomalies = |ns: &[i32]| {
+        let mut n = 0;
+        for i in 0..ns.len() - 1 {
+            if ns[i] > ns[i + 1] {
+                n += 1;
             }
         }
+        n
+    };
+    if anomalies(&nums[..]) == 0 {
+        return true;
     }
+    if anomalies(&nums[..]) > 1 {
+        return false;
+    }
+    let idx = |ns: &[i32]| {
+        for i in 0..ns.len() - 1 {
+            if ns[i] > ns[i + 1] {
+                return i;
+            }
+        }
+        ns.len()
+    };
     true
 }
 
