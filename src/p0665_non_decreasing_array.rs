@@ -1,4 +1,7 @@
 pub fn check_possibility(nums: Vec<i32>) -> bool {
+    if nums.len() == 1 {
+        return true;
+    }
     let is_monotone = |v: &[i32]| -> bool {
         for i in 0..v.len() - 1 {
             if v[i] > v[i + 1] {
@@ -63,5 +66,10 @@ mod tests {
     #[test]
     fn check_possibility_132() {
         assert_eq!(true, super::check_possibility(vec![1, 3, 2]));
+    }
+
+    #[test]
+    fn check_possibility_1() {
+        assert_eq!(true, super::check_possibility(vec![1]));
     }
 }
