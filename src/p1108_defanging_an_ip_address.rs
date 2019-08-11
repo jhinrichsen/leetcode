@@ -1,7 +1,7 @@
 // String as parameter is not idiomatic Rust
-pub fn defang(ip: String) -> String {
+pub fn defang(address: String) -> String {
 	let mut s = String::new();
-	for c in ip.chars() {
+	for c in address.chars() {
 		if c == '.' {
 			s.push_str("[.]");
 		} else {
